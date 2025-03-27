@@ -99,9 +99,10 @@ const deleteGame = expressAsyncHandler(async (req, res) => {
 const getAllGameDocs = expressAsyncHandler(async (req, res) => {
   try {
     const gameDocs = await Game.find({}); // Fetch all game documents
-    const currentDate = moment().format("YYYY-MM-DD"); // Get current date in YYYY-MM-DD format
+    const currentDate = moment().format("YYYY-MM-DD"); // Get current date
+    const serverTime = moment().format("YYYY-MM-DD HH:mm:ss"); // Get current server time
 
-    // Iterate over each game document
+    // Iterate over each game document and find matching result
     const updatedGameDocs = await Promise.all(
       gameDocs.map(async (game) => {
         const matchingResult = await Result.findOne({
@@ -109,7 +110,6 @@ const getAllGameDocs = expressAsyncHandler(async (req, res) => {
           result_date: currentDate, // Match current date with result's added_date
         });
 
-        // Add result_value if match found, otherwise leave empty
         return {
           ...game.toObject(),
           result_value: matchingResult ? matchingResult.result : "",
@@ -120,6 +120,7 @@ const getAllGameDocs = expressAsyncHandler(async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Game documents retrieved successfully",
+      server_time: serverTime, // Add server time field
       data: updatedGameDocs,
     });
   } catch (error) {

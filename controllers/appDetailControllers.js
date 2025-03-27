@@ -52,7 +52,6 @@ const deleteAppDetailById = expressAsyncHandler(async (req, res) => {
   });
 });
 
-
 const getAllDocsOfAppDetail = expressAsyncHandler(async (req, res) => {
   const documents = await App.find({}); // Fetch all users
 
@@ -63,13 +62,38 @@ const getAllDocsOfAppDetail = expressAsyncHandler(async (req, res) => {
   });
 });
 
+const getAppDetailByKey = expressAsyncHandler(async (req, res) => {
+  const { key } = req.params; // Extract key from URL parameter
 
+  try {
+    // Find the app detail by key
+    const appDetail = await App.findOne({ key });
 
+    if (!appDetail) {
+      return res.status(404).json({
+        success: false,
+        message: "App detail not found",
+      });
+    }
 
+    return res.status(200).json({
+      success: true,
+      message: "App detail retrieved successfully",
+      data: appDetail,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+});
 
 export {
   createAppDetails,
   updateAppDetailById,
   deleteAppDetailById,
   getAllDocsOfAppDetail,
+  getAppDetailByKey,
 };

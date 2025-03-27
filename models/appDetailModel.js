@@ -12,6 +12,7 @@ const AppDetailSchema = new mongoose.Schema(
     is_ref: { type: Boolean, default: false },
     is_ref_per: { type: Boolean, default: false },
     max_jodi: { type: String, default: "" },
+    key: { type: String, default: "" },
     max_harup: { type: String, default: "" },
     min_bid: { type: String, default: "" },
     min_harup_bid: { type: String, default: "" },

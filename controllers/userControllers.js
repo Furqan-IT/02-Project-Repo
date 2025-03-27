@@ -341,6 +341,44 @@ const deleteUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
+// ✅ GET user by refcode
+const getUserByRefCode = expressAsyncHandler(async (req, res) => {
+  const { refcode } = req.params;
+
+  const user = await User.findOne({ refcode });
+
+  if (user) {
+    res.status(200).json({
+      success: true,
+      message: "User found",
+      status_code: 200,
+      data: user,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found with this refcode");
+  }
+});
+
+// ✅ GET user by userid
+const getUserByUserId = expressAsyncHandler(async (req, res) => {
+  const { userid } = req.params;
+
+  const user = await User.findOne({ userid });
+
+  if (user) {
+    res.status(200).json({
+      success: true,
+      message: "User found",
+      status_code: 200,
+      data: user,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found with this userid");
+  }
+});
+
 export {
   registerUser,
   authUser,
@@ -349,4 +387,6 @@ export {
   updateUser,
   deleteUser,
   getAllUsersForAgent,
+  getUserByUserId,
+  getUserByRefCode,
 };

@@ -5,6 +5,8 @@ import {
   deleteUser,
   getAllUsers,
   getAllUsersForAgent,
+  getUserByRefCode,
+  getUserByUserId,
   registerUser,
   updateUser,
 } from "../controllers/userControllers.js";
@@ -31,6 +33,7 @@ import {
   createAppDetails,
   deleteAppDetailById,
   getAllDocsOfAppDetail,
+  getAppDetailByKey,
   updateAppDetailById,
 } from "../controllers/appDetailControllers.js";
 import {
@@ -64,6 +67,8 @@ router.route("/get-all-user").post(getAllUsers); // Get All Listed Users Array
 router.route("/get-agent-user").post(getAllUsersForAgent); // Get All Listed Users Array on the basis of Agent_id
 router.route("/updateUser/:userid").put(updateUser); // Update the User Model
 router.route("/deleteUser/:userid").delete(deleteUser); //Delete User
+router.route("/refcode/:refcode").get(getUserByRefCode);
+router.route("/userid/:userid").get(getUserByUserId);
 
 // Transaction Routes
 router.route("/addTransaction").post(addTransaction);
@@ -89,6 +94,7 @@ router.route("/create-doc").post(createAppDetails); // Create App Details
 router.route("/update-doc/:id").put(updateAppDetailById); // Update App Details by ID
 router.route("/delete-doc/:id").delete(deleteAppDetailById); // Delete App Details by ID
 router.route("/get-doc").get(getAllDocsOfAppDetail); // Get App Details
+router.route("/get-app-detail/:key").get(getAppDetailByKey); // Get App Details
 
 //Result Route
 router.route("/create-result").post(createResult); // Create Result
