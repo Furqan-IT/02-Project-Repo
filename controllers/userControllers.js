@@ -355,8 +355,11 @@ const getUserByRefCode = expressAsyncHandler(async (req, res) => {
       data: user,
     });
   } else {
-    res.status(404);
-    throw new Error("User not found with this refcode");
+    res.status(404).json({
+      success: false,
+      message: "User Not Found",
+      status_code: 404,
+    });
   }
 });
 
@@ -374,8 +377,11 @@ const getUserByUserId = expressAsyncHandler(async (req, res) => {
       data: user,
     });
   } else {
-    res.status(404);
-    throw new Error("User not found with this userid");
+    res.status(404).json({
+      success: false,
+      message: "User Not Found",
+      status_code: 404,
+    });
   }
 });
 
