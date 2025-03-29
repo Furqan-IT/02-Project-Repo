@@ -37,6 +37,7 @@ import {
   updateAppDetailById,
 } from "../controllers/appDetailControllers.js";
 import {
+    bulkInsert,
   checkResult,
   createResult,
   deleteResultByKey,
@@ -104,6 +105,8 @@ router.route("/get-result").post(getAllResults); // Get Result // Send result_da
 router.route("/get-result-game").post(getAllResultsOnGameKey); // Get Result // Send result_date in body
 router.route("/get-result-month").post(getAllResultsOnMonth); // Get Result // Send result_date in body
 router.route("/checkResult").get(checkResult); //Check Result // Send game_key and result_date in query
+router.route("/bulk_insert").post(bulkInsert);
+
 
 //User Win Routes
 router.route("/create-user-win").post(createUserWin); // Create User Win

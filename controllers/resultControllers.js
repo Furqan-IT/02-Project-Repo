@@ -230,6 +230,66 @@ const checkResult = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const bulkInsert = expressAsyncHandler(async (req, res) => {
+  try {
+    const { transactionArray, winArray } = req.body;
+
+    if (!transactionArray || !winArray) {
+      return res.status(400).json({ success: false, message: "Missing data" });
+    }
+
+    // Step 1: Save Transactions
+    const transactionDocs = await Transaction.insertMany(transactionArray);
+
+    // Step 2: Save User Wins
+    const winDocs = await UserWin.insertMany(winArray);
+
+    // Step 3: Update User Balances One by One
+    for (const win of winArray) {
+      const { UserId, win_amount } = win;
+
+      if (!UserId || !win_amount) {
+        console.log(`Skipping invalid entry: ${JSON.stringify(win)}`);
+        continue;
+      }
+
+      const winAmountNumber = parseFloat(win_amount);
+      if (isNaN(winAmountNumber) || winAmountNumber <= 0) {
+        console.log(`Invalid win_amount: ${win_amount} for UserId: ${UserId}`);
+        continue;
+      }
+
+      // Step 3.1: Fetch the existing balance
+      const user = await User.findOne({ userid: UserId });
+
+      if (!user) {
+        console.log(`User not found: ${UserId}`);
+        continue;
+      }
+
+      const currentBalance = parseFloat(user.balance) || 0; // Convert existing balance
+      const updatedBalance = currentBalance + winAmountNumber; // Add win_amount
+
+      // Step 3.2: Update the balance
+      await User.updateOne({ userid: UserId }, { balance: updatedBalance });
+
+      console.log(
+        `Updated balance for ${UserId}: ${currentBalance} -> ${updatedBalance}`
+      );
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Transactions and Wins saved successfully",
+      transactionCount: transactionDocs.length,
+      winCount: winDocs.length,
+    });
+  } catch (error) {
+    console.error("❌ Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
 export {
   createResult,
   updateResultByKey,
@@ -238,4 +298,5 @@ export {
   getAllResultsOnGameKey,
   checkResult,
   getAllResultsOnMonth,
+  bulkInsert,
 };
