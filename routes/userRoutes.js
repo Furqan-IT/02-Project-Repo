@@ -8,6 +8,7 @@ import {
   getUserByRefCode,
   getUserByUserId,
   registerUser,
+  resetUser,
   updateUser,
 } from "../controllers/userControllers.js";
 import {
@@ -37,7 +38,7 @@ import {
   updateAppDetailById,
 } from "../controllers/appDetailControllers.js";
 import {
-    bulkInsert,
+  bulkInsert,
   checkResult,
   createResult,
   deleteResultByKey,
@@ -68,6 +69,7 @@ router.route("/get-all-user").post(getAllUsers); // Get All Listed Users Array
 router.route("/get-agent-user").post(getAllUsersForAgent); // Get All Listed Users Array on the basis of Agent_id
 router.route("/updateUser/:userid").put(updateUser); // Update the User Model
 router.route("/deleteUser/:userid").delete(deleteUser); //Delete User
+router.route("/resetUser/:userid").delete(resetUser); //Delete User
 router.route("/refcode/:refcode").get(getUserByRefCode);
 router.route("/userid/:userid").get(getUserByUserId);
 
@@ -106,7 +108,6 @@ router.route("/get-result-game").post(getAllResultsOnGameKey); // Get Result // 
 router.route("/get-result-month").post(getAllResultsOnMonth); // Get Result // Send result_date in body
 router.route("/checkResult").get(checkResult); //Check Result // Send game_key and result_date in query
 router.route("/bulk_insert").post(bulkInsert);
-
 
 //User Win Routes
 router.route("/create-user-win").post(createUserWin); // Create User Win

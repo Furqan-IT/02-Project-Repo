@@ -341,6 +341,55 @@ const deleteUser = expressAsyncHandler(async (req, res) => {
   }
 });
 
+//Reset User
+const resetUser = expressAsyncHandler(async (req, res) => {
+  try {
+    const { userid } = req.params;
+
+    if (!userid) {
+      return res.status(400).json({
+        success: false,
+        message: "UserID is required.",
+      });
+    }
+
+    // Step 1: Check if user exists
+    const user = await User.findOne({ userid });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    // Step 2: Delete user-related data from all models except User
+    await Promise.all([
+      Bid.deleteMany({ userid }), // Match `userid`
+      Transaction.deleteMany({ UserId: userid }), // Match `UserId`
+      Notification.deleteMany({ UserId: userid }), // Match `UserId`
+      Result.deleteMany({ userid }), // Match `userid`
+    ]);
+
+    // Step 3: Reset balance and bonus_balance to "0"
+    await User.updateOne(
+      { userid },
+      { $set: { balance: "0", bonus_balance: "0" } }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "User data reset successfully. All associated records deleted, balances set to zero.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+});
+
 // ✅ GET user by refcode
 const getUserByRefCode = expressAsyncHandler(async (req, res) => {
   const { refcode } = req.params;
@@ -392,6 +441,7 @@ export {
   getAllUsers,
   updateUser,
   deleteUser,
+  resetUser,
   getAllUsersForAgent,
   getUserByUserId,
   getUserByRefCode,
